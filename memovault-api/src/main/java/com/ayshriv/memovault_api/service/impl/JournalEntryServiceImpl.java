@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +27,7 @@ public class JournalEntryServiceImpl implements JournalEntryService {
     public DesireStatus addJournalEntry(JournalEntry journalEntry) {
         LOGGER.info("JournalEntryService >> addJournalEntry called!");
         DesireStatus status = new DesireStatus();
-        LocalDateTime dtNow = LocalDateTime.now();
+        Date dtNow = new Date();
         LOGGER.info("JournalEntryService >> addJournalEntry object received >> Title: " + journalEntry.getTitle());
         LOGGER.info("JournalEntryService >> addJournalEntry object received >> Content: " + journalEntry.getContent());
         try {
@@ -35,10 +36,8 @@ public class JournalEntryServiceImpl implements JournalEntryService {
                 status = Resources.setStatus(Constants.STATUS_FAILURE, Constants.PARAMETER_MISSING, "Title or Content");
                 return status;
             }
-
-            // Set default values for createdOn and updatedOn
-            journalEntry.setCreatedAt((journalEntry.getCreatedAt() != null) ? journalEntry.getCreatedAt() : dtNow);
-            journalEntry.setUpdatedAt((journalEntry.getUpdatedAt() != null) ? journalEntry.getUpdatedAt() : dtNow);
+            journalEntry.setCreatedOn(dtNow);
+            journalEntry.setUpdatedOn(dtNow);
             JournalEntry savedJournalEntry = journalEntryRepository.save(journalEntry);
 
             if (savedJournalEntry != null) {
@@ -63,7 +62,7 @@ public class JournalEntryServiceImpl implements JournalEntryService {
                 JournalEntry updatedEntry = existingEntry.get();
                 updatedEntry.setTitle(journalEntry.getTitle());
                 updatedEntry.setContent(journalEntry.getContent());
-                updatedEntry.setUpdatedAt(LocalDateTime.now());
+                updatedEntry.setUpdatedOn(new Date());
                 journalEntryRepository.save(updatedEntry);
 
                 status = Resources.setStatus(Constants.STATUS_SUCCESS, Constants.UPDATE_SUCCESS, "JournalEntry");

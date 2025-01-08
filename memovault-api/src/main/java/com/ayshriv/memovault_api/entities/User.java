@@ -3,10 +3,17 @@ package com.ayshriv.memovault_api.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Table(name = "users")
+@Entity
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class User extends BaseEntity{
 
     @Column(name = "PASSWORD")
@@ -21,11 +28,11 @@ public class User extends BaseEntity{
     @JsonProperty("last_name")
     private String lastName;
 
-    @Column(name = "MOBILE_NUMBER")
+    @Column(name = "MOBILE_NUMBER",unique = true)
     @JsonProperty("mobile_number")
     private String mobileNo;
 
-    @Column(name = "EMAIL_ID")
+    @Column(name = "EMAIL_ID", unique = true)
     @JsonProperty("email_address")
     private String emailId;
 

@@ -1,12 +1,12 @@
 package com.ayshriv.memovault_api.common;
 
 import com.ayshriv.memovault_api.entities.JournalEntry;
+import com.ayshriv.memovault_api.entities.User;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.catalina.User;
 
 import java.util.List;
 
@@ -29,8 +29,9 @@ public class DesireStatus {
 
     private String firstName;
     private String lastName;
-    private User user;
-    private List<User> users;
+
+    private com.ayshriv.memovault_api.entities.User user;
+    private List<com.ayshriv.memovault_api.entities.User> users;
 
     private JournalEntry journalEntry;
     private List<JournalEntry> journalEntries;
