@@ -1,0 +1,8 @@
+package com.ayshriv.memovault_api.common;
+
+import com.fasterxml.jackson.annotation.JsonFilter;
+
+@JsonFilter("MemoVaultStatusFilter")
+public class MemoVaultStatus {
+    
+}

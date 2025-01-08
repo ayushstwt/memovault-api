@@ -1,0 +1,4 @@
+package com.ayshriv.memovault_api.common;
+
+public class BaseEntity {
+}
