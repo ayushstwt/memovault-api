@@ -95,6 +95,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public DesireStatus deleteUser(String email) {
+        LOGGER.info("UserService >> delete User called with emailId: {}", email);
+        DesireStatus status = new DesireStatus();
+        try {
+            User foundUser = userRepository.findByEmailId(email);
+            if (foundUser != null) {
+                userRepository.delete(foundUser);
+                status = Resources.setStatus(Constants.STATUS_SUCCESS, Constants.DELETE_SUCCESS, "User");
+            } else {
+                status = Resources.setStatus(Constants.STATUS_FAILURE, Constants.OBJ_NOT_EXIST, "User");
+            }
+        } catch (Exception e) {
+            status = Resources.setStatus(Constants.STATUS_ERROR, Constants.EXECUTION_ERROR + e.getMessage(), "Delete user");
+            LOGGER.error("Error in UserService >> deleteUser: {}", e.getMessage());
+        }
+        return status;
+    }
+
+    @Override
     public DesireStatus updateUser(User user) {
         LOGGER.info("UserService >> updateUser called with emailId: {}", user.getEmailId());
         DesireStatus status = new DesireStatus();

@@ -11,4 +11,6 @@ public interface UserService {
     DesireStatus getAllUser();
 
     DesireStatus getUser(String emailId);
+
+    DesireStatus deleteUser(String email);
 }

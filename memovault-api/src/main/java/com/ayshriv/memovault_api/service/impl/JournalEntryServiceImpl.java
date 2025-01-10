@@ -3,7 +3,9 @@ import com.ayshriv.memovault_api.common.Constants;
 import com.ayshriv.memovault_api.common.DesireStatus;
 import com.ayshriv.memovault_api.common.Resources;
 import com.ayshriv.memovault_api.entities.JournalEntry;
+import com.ayshriv.memovault_api.entities.User;
 import com.ayshriv.memovault_api.repository.JournalEntryRepository;
+import com.ayshriv.memovault_api.repository.UserRepository;
 import com.ayshriv.memovault_api.service.JournalEntryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,29 +25,39 @@ public class JournalEntryServiceImpl implements JournalEntryService {
     @Autowired
     private JournalEntryRepository journalEntryRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @Override
-    public DesireStatus addJournalEntry(JournalEntry journalEntry) {
+    public DesireStatus addJournalEntry(JournalEntry journalEntry,String username) {
         LOGGER.info("JournalEntryService >> addJournalEntry called!");
         DesireStatus status = new DesireStatus();
         Date dtNow = new Date();
         LOGGER.info("JournalEntryService >> addJournalEntry object received >> Title: " + journalEntry.getTitle());
         LOGGER.info("JournalEntryService >> addJournalEntry object received >> Content: " + journalEntry.getContent());
         try {
-            if (journalEntry.getTitle() == null || journalEntry.getContent() == null) {
-                LOGGER.error("Invalid JournalEntry object: Missing required fields (title/content)");
-                status = Resources.setStatus(Constants.STATUS_FAILURE, Constants.PARAMETER_MISSING, "Title or Content");
-                return status;
+            User user=userRepository.findByEmailId(username);
+            if (user!=null) {
+                if (journalEntry.getTitle() == null || journalEntry.getContent() == null) {
+                    LOGGER.error("Invalid JournalEntry object: Missing required fields (title/content)");
+                    status = Resources.setStatus(Constants.STATUS_FAILURE, Constants.PARAMETER_MISSING, "Title or Content");
+                    return status;
+                }
+                journalEntry.setCreatedOn(dtNow);
+                journalEntry.setUpdatedOn(dtNow);
+                journalEntry.setUser(user);
+                JournalEntry savedJournalEntry = journalEntryRepository.save(journalEntry);
+                if (savedJournalEntry != null) {
+                    status = Resources.setStatus(Constants.STATUS_SUCCESS, Constants.SAVE_SUCCESS, "JournalEntry");
+                    status.setJournalEntry(savedJournalEntry);
+                } else {
+                    status = Resources.setStatus(Constants.STATUS_FAILURE, Constants.SAVE_FAILURE, "JournalEntry");
+                }
             }
-            journalEntry.setCreatedOn(dtNow);
-            journalEntry.setUpdatedOn(dtNow);
-            JournalEntry savedJournalEntry = journalEntryRepository.save(journalEntry);
+            else {
+                status = Resources.setStatus(Constants.STATUS_FAILURE, Constants.OBJ_NOT_EXIST, "user");
+            }
 
-            if (savedJournalEntry != null) {
-                status = Resources.setStatus(Constants.STATUS_SUCCESS, Constants.SAVE_SUCCESS, "JournalEntry");
-                status.setJournalEntry(savedJournalEntry);
-            } else {
-                status = Resources.setStatus(Constants.STATUS_FAILURE, Constants.SAVE_FAILURE, "JournalEntry");
-            }
         } catch (Exception e) {
             status = Resources.setStatus(Constants.STATUS_ERROR, Constants.EXECUTION_ERROR + e.getMessage(), "Add journal entry");
         }
@@ -113,17 +125,24 @@ public class JournalEntryServiceImpl implements JournalEntryService {
     }
 
     @Override
-    public DesireStatus getAllJournalEntries() {
+    public DesireStatus getAllJournalEntries(String username) {
         LOGGER.info("JournalEntryService >> getAllJournalEntries called!");
         DesireStatus status = new DesireStatus();
         try {
-            List<JournalEntry> journalEntries = journalEntryRepository.findAll();
-            if (!journalEntries.isEmpty()) {
-                status = Resources.setStatus(Constants.STATUS_SUCCESS, Constants.LIST_SUCCESS, "JournalEntries");
-                status.setJournalEntries(journalEntries);
-            } else {
-                status = Resources.setStatus(Constants.STATUS_FAILURE, Constants.LIST_FAILURE, "JournalEntries");
+            User user = userRepository.findByEmailId(username);
+            if (user!=null) {
+                List<JournalEntry> journalEntries = user.getJournalEntries();
+                if (!journalEntries.isEmpty()) {
+                    status = Resources.setStatus(Constants.STATUS_SUCCESS, Constants.LIST_SUCCESS, "JournalEntries");
+                    status.setJournalEntries(journalEntries);
+                } else {
+                    status = Resources.setStatus(Constants.STATUS_FAILURE, Constants.LIST_FAILURE, "JournalEntries");
+                }
             }
+            else {
+                status = Resources.setStatus(Constants.STATUS_FAILURE, Constants.OBJ_NOT_EXIST, "user");
+            }
+
         } catch (Exception e) {
             status = Resources.setStatus(Constants.STATUS_ERROR, Constants.EXECUTION_ERROR + e.getMessage(), "Fetch all journal entries");
         }

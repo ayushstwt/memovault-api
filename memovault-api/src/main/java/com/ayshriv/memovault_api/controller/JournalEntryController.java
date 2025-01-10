@@ -19,10 +19,10 @@ public class JournalEntryController {
     @Autowired
     JournalEntryService journalEntryService;
 
-    @PostMapping("/add")
-    public MappingJacksonValue addJournalEntry(@RequestBody JournalEntry journalEntry) {
+    @PostMapping("/add/{username}")
+    public MappingJacksonValue addJournalEntry(@RequestBody JournalEntry journalEntry,@PathVariable String username) {
         LOGGER.info("JournalController >> addJournalEntry called.");
-        DesireStatus status = journalEntryService.addJournalEntry(journalEntry);
+        DesireStatus status = journalEntryService.addJournalEntry(journalEntry,username);
         String[] properties = { "statusType", "text", "journalEntry" };
         return Resources.formatedResponse(status, properties);
     }
@@ -51,10 +51,10 @@ public class JournalEntryController {
         return Resources.formatedResponse(status, properties);
     }
 
-    @GetMapping("/getAll")
-    public MappingJacksonValue getAllJournalEntries() {
+    @GetMapping("/getAll/{username}")
+    public MappingJacksonValue getAllJournalEntries(@PathVariable String username) {
         LOGGER.info("JournalController >> getAllJournalEntries called.");
-        DesireStatus status = journalEntryService.getAllJournalEntries();
+        DesireStatus status = journalEntryService.getAllJournalEntries(username);
         String[] properties = { "statusType", "text", "journalEntries" };
         return Resources.formatedResponse(status, properties);
     }

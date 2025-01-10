@@ -1,5 +1,6 @@
 package com.ayshriv.memovault_api.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,6 +27,7 @@ public class JournalEntry extends BaseEntity{
 
     @JoinColumn(name = "USER_ID", referencedColumnName = "ID")
     @ManyToOne(optional = true)
+    @JsonIgnore
     User user;
 
     public User getUser() {

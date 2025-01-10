@@ -50,4 +50,12 @@ public class UserController {
         String[] properties = { "statusType", "text", "user" };
         return Resources.formatedResponse(status, properties);
     }
+
+    @GetMapping("/delete/{email}")
+    public MappingJacksonValue deleteUser(@PathVariable String email) {
+        LOGGER.info("UserController >> deleteUser called.");
+        DesireStatus status = userService.deleteUser(email);
+        String[] properties = { "statusType", "text", "user" };
+        return Resources.formatedResponse(status, properties);
+    }
 }
