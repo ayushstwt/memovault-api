@@ -36,7 +36,7 @@
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/memovault.git
+   git clone https://github.com/ayushstwt/memovault-api.git
    ```
 2. Navigate to the project directory:
    ```bash
