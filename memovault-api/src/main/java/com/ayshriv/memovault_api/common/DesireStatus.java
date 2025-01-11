@@ -1,5 +1,6 @@
 package com.ayshriv.memovault_api.common;
 
+import com.ayshriv.memovault_api.entities.AppNotification;
 import com.ayshriv.memovault_api.entities.JournalEntry;
 import com.ayshriv.memovault_api.entities.User;
 import com.fasterxml.jackson.annotation.JsonFilter;
@@ -35,6 +36,25 @@ public class DesireStatus {
 
     private JournalEntry journalEntry;
     private List<JournalEntry> journalEntries;
+
+    private AppNotification notification;
+    private List<AppNotification> notifications;
+
+    public AppNotification getNotification() {
+        return notification;
+    }
+
+    public void setNotification(AppNotification notification) {
+        this.notification = notification;
+    }
+
+    public List<AppNotification> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(List<AppNotification> notifications) {
+        this.notifications = notifications;
+    }
 
     public List<JournalEntry> getJournalEntries() {
         return journalEntries;
